@@ -1,0 +1,55 @@
+{
+  "version": "2.2.0",
+  "songName": "Sab",
+  "artist": "Unknown Artist",
+  "looped": false,
+  "offsets": {
+    "instrumental": 0,
+    "altInstrumentals": {},
+    "vocals": {}
+  },
+  "playData": {
+    "album": "volume1",
+    "previewStart": 0,
+    "previewEnd": 15000,
+    "songVariations": [],
+    "difficulties": [
+      "easy",
+      "normal",
+      "hard"
+    ],
+    "characters": {
+      "album": "volume1",
+      "player": "1",
+      "girlfriend": "1",
+      "opponent": "1",
+      "instrumental": "",
+      "altInstrumentals": []
+    },
+    "stage": "blue",
+    "noteStyle": "funkin",
+    "ratings": {}
+  },
+  "timeFormat": "ms",
+  "timeChanges": [
+    {
+      "t": 0,
+      "b": 0,
+      "bpm": 150,
+      "n": 4,
+      "d": 4,
+      "bt": [
+        4,
+        4,
+        4,
+        4
+      ]
+    }
+  ],
+  "generatedBy": "FNF Porter (by Gusborg, tposejank, BombasticTom & VocalFan)",
+  "ratings": {
+    "easy": 0,
+    "normal": 0,
+    "hard": 0
+  }
+}

@@ -1,0 +1,10 @@
+{
+    "version": "1.0.0",
+    "name": "uwu",
+    "titleAsset": "storymenu/titles/sab",
+    "props": [],
+    "background": "#9271FD",
+    "songs": [
+        "sab"
+    ]
+}

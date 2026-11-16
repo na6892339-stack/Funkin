@@ -1,0 +1,127 @@
+{
+    "version": "1.0.0",
+    "name": "1",
+    "assetPath": "characters/1",
+    "singTime": 6.1,
+    "isPixel": false,
+    "scale": 1,
+    "healthIcon": {
+        "id": "YGBF",
+        "isPixel": false,
+        "flipX": false,
+        "scale": 1
+    },
+    "animations": [
+        {
+            "name": "singLEFT",
+            "prefix": "Dad Sing Note LEFT",
+            "offsets": [
+                -96,
+                -170
+            ],
+            "frameRate": 24,
+            "frameIndices": []
+        },
+        {
+            "name": "singDOWN",
+            "prefix": "Dad Sing Note DOWN",
+            "offsets": [
+                0,
+                -30
+            ],
+            "frameRate": 24,
+            "frameIndices": []
+        },
+        {
+            "name": "singUP",
+            "prefix": "Dad Sing Note UP",
+            "offsets": [
+                -6,
+                50
+            ],
+            "frameRate": 24,
+            "frameIndices": []
+        },
+        {
+            "name": "singRIGHT",
+            "prefix": "Dad Sing Note RIGHT",
+            "offsets": [
+                0,
+                27
+            ],
+            "frameRate": 24,
+            "frameIndices": []
+        },
+        {
+            "name": "idle",
+            "prefix": "Dad idle dance",
+            "offsets": [
+                82,
+                -66
+            ],
+            "frameRate": 24,
+            "frameIndices": []
+        },
+        {
+            "name": "idle-loop",
+            "prefix": "Dad idle dance",
+            "offsets": [
+                0,
+                0
+            ],
+            "frameRate": 24,
+            "frameIndices": [
+                10,
+                11,
+                12,
+                12
+            ]
+        },
+        {
+            "name": "singLEFT-loop",
+            "prefix": "Dad Sing Note LEFT",
+            "offsets": [
+                -9,
+                10
+            ],
+            "frameRate": 24,
+            "frameIndices": [
+                12,
+                13,
+                14,
+                15
+            ]
+        },
+        {
+            "name": "singRIGHT-loop",
+            "prefix": "Dad Sing Note RIGHT",
+            "offsets": [
+                0,
+                27
+            ],
+            "frameRate": 24,
+            "frameIndices": [
+                15,
+                16,
+                17,
+                18
+            ]
+        },
+        {
+            "name": "singUP-loop",
+            "prefix": "Dad Sing Note UP",
+            "offsets": [
+                -6,
+                50
+            ],
+            "frameRate": 24,
+            "frameIndices": [
+                56,
+                57,
+                58,
+                59
+            ]
+        }
+    ],
+    "flipX": false
+}

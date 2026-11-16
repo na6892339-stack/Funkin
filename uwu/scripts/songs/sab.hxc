@@ -1,0 +1,160 @@
+import flixel.FlxG;
+import funkin.play.PlayState;
+import funkin.play.song.Song;
+import funkin.Paths;
+import funkin.graphics.video.FunkinVideoSprite;
+
+// Web用のビデオ再生に必要なクラス群
+import openfl.media.Video;
+import openfl.net.NetConnection;
+import openfl.net.NetStream;
+
+class SabSong extends Song
+{
+    var videoSprite:FunkinVideoSprite; // PC用
+    
+    // Web用変数
+    var webVideo:Video;
+    var webStream:NetStream;
+    var isWeb:Bool = false;
+
+    public function new()
+    {
+        super('sab');
+        #if html5
+        isWeb = true;
+        #end
+    }
+
+    override function onSongLoaded(event:SongLoadScriptEvent):Void
+    {
+        super.onSongLoaded(event);
+
+        if (PlayState.instance == null) return;
+
+        var videoPath:String = Paths.videos('intro');
+        trace('[SabSong] Loading video from: ' + videoPath);
+
+        if (isWeb)
+        {
+            // --- Web（ブラウザ）用の動画読み込み処理 ---
+            try {
+                var connection:NetConnection = new NetConnection();
+                connection.connect(null);
+                
+                webStream = new NetStream(connection);
+                // クライアントオブジェクト（エラー回避用ダミー）
+                webStream.client = {
+                    onMetaData: function(meta:Dynamic) {
+                        trace("Video metadata received");
+                    },
+                    onPlayStatus: function(status:Dynamic) {
+                        if (status.code == "NetStream.Play.Complete") {
+                            onVideoEnd();
+                        }
+                    }
+                };
+
+                webVideo = new Video(1280, 720);
+                webVideo.attachNetStream(webStream);
+                
+                // Web環境では相対パス（assets/videos/intro.mp4 など）を直接指定する必要があります
+                // ※Paths.videos('intro') が返す文字列に合わせて調整してください
+                webStream.play(videoPath);
+                // 最初は一時停止しておく（onSongStartで再生するため）
+                webStream.pause(); 
+
+                // OpenFLのVideoオブジェクトをFlixelのゲーム画面（HUD）に直接追加
+                FlxG.stage.addChild(webVideo);
+            } catch(e:Dynamic) {
+                trace('[SabSong] Web Video Load Error: ' + e);
+            }
+        }
+        else
+        {
+            // --- PC用の従来の処理 ---
+            videoSprite = new FunkinVideoSprite(0, 0);
+            videoSprite.scrollFactor.set(0, 0);
+            videoSprite.cameras = [PlayState.instance.camHUD];
+
+            videoSprite.bitmap.onEndReached.add(function() {
+                onVideoEnd();
+            });
+
+            videoSprite.load(videoPath);
+            PlayState.instance.add(videoSprite);
+        }
+    }
+
+    // 動画が終了した時の共通処理
+    function onVideoEnd():Void
+    {
+        if (isWeb) {
+            if (webVideo != null && FlxG.stage.contains(webVideo)) {
+                FlxG.stage.removeChild(webVideo);
+            }
+            if (webStream != null) {
+                webStream.close();
+                webStream = null;
+            }
+            webVideo = null;
+        } else {
+            if (videoSprite != null) {
+                PlayState.instance.remove(videoSprite);
+                videoSprite.destroy();
+                videoSprite = null;
+            }
+        }
+        trace('[SabSong] Video finished and removed.');
+    }
+
+    override function onSongStart(event:ScriptEvent):Void
+    {
+        super.onSongStart(event);
+
+        if (isWeb && webStream != null) {
+            trace('[SabSong] Playing Web video!');
+            webStream.resume();
+        } else if (!isWeb && videoSprite != null) {
+            trace('[SabSong] Playing PC video!');
+            videoSprite.play();
+        }
+    }
+
+    override function onUpdate(event:UpdateScriptEvent):Void
+    {
+        super.onUpdate(event);
+        // Web版の動画サイズと位置をブラウザ画面に合わせる
+        if (isWeb && webVideo != null) {
+            webVideo.width = FlxG.width;
+            webVideo.height = FlxG.height;
+            webVideo.x = (FlxG.stage.stageWidth - webVideo.width) / 2;
+            webVideo.y = (FlxG.stage.stageHeight - webVideo.height) / 2;
+        }
+        else if (!isWeb && videoSprite != null && videoSprite.bitmap != null) {
+            videoSprite.setGraphicSize(1280, 720);
+            videoSprite.updateHitbox();
+            videoSprite.screenCenter();
+        }
+    }
+
+    override function onPause(event:PauseScriptEvent):Void
+    {
+        super.onPause(event);
+        if (isWeb && webStream != null) webStream.pause();
+        else if (!isWeb && videoSprite != null) videoSprite.pause();
+    }
+
+    override function onResume(event:ScriptEvent):Void
+    {
+        super.onResume(event);
+        if (isWeb && webStream != null) webStream.resume();
+        else if (!isWeb && videoSprite != null) videoSprite.resume();
+    }
+
+    override function onDestroy(event:ScriptEvent):Void
+    {
+        super.onDestroy(event);
+        onVideoEnd();
+    }
+}
