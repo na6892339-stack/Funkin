@@ -71,6 +71,7 @@ jobs:
       - name: Install Haxe Libraries
         run: |
           haxelib setup ~/haxelib
+          haxelib install hxp
           haxelib install lime
           haxelib install openfl
           haxelib install flixel
