@@ -75,9 +75,17 @@ jobs:
           haxelib install lime
           haxelib install openfl
           haxelib install flixel
-          haxelib run lime setup
+          # 🌟 プロジェクト固有のライブラリ環境(hmm)を構築
           haxelib run hmm setup || true
           haxelib run hmm install || true
+          
+          # 🌟 通常版のLime/OpenFLではなく、プロジェクト内のカスタム版を最優先で有効化する
+          haxelib dev lime .haxelib/lime/git
+          haxelib dev openfl .haxelib/openfl/git
+          haxelib dev hxcpp .haxelib/hxcpp/git
+          
+          # カスタム版のツールとして再セットアップ
+          haxelib run lime setup
 
       - name: Build game (HTML5)
         run: |
