@@ -1,4 +1,3 @@
-# Builds the game for HTML5 to ensure it compiles for web port.
 name: Build and Upload nightly game builds
 
 on:
@@ -16,37 +15,10 @@ on:
 
 jobs:
 
-  gather-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      trigger-build: 'true'
-    steps:
-      - name: Skip check and always trigger
-        run: echo "Triggering build for Web Port"
-
-  gather-tags:
-    runs-on: ubuntu-latest
-    outputs:
-      primary: 'latest'
-      list: 'latest'
-    steps:
-      - name: Skip tag gathering
-        run: echo "Using latest tags"
-
-  docker-image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip docker image creation
-        run: echo "Using standard environment"
-
-  build-game-on-host:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip Desktop Builds
-        run: echo "Skipping desktop builds to optimize for Web port!"
-
   build-game-in-container:
     runs-on: ubuntu-latest
+    # 🌟 FNF公式が提供している、完璧に設定済みのビルド環境（コンテナ）を直接使います！
+    container: ghcr.io/funkincrew/build-dependencies:latest
     strategy:
       fail-fast: false
       matrix:
@@ -62,30 +34,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-      
-      - name: Setup Haxe
-        uses: krdlab/setup-haxe@v1
-        with:
-          haxe-version: 4.3.4
 
-      - name: Install Haxe Libraries
+      - name: Config haxelib
         run: |
-          haxelib setup ~/haxelib
-          haxelib install hxp
-          haxelib install lime
-          haxelib install openfl
-          haxelib install flixel
-          # 🌟 プロジェクト固有のライブラリ環境(hmm)を構築
+          haxelib --never newrepo
+          echo "HAXEPATH=$(haxelib config)" >> "$GITHUB_ENV"
+
+      - name: Setup Haxe Environment
+        run: |
           haxelib run hmm setup || true
           haxelib run hmm install || true
-          
-          # 🌟 通常版のLime/OpenFLではなく、プロジェクト内のカスタム版を最優先で有効化する
-          haxelib dev lime .haxelib/lime/git
-          haxelib dev openfl .haxelib/openfl/git
-          haxelib dev hxcpp .haxelib/hxcpp/git
-          
-          # カスタム版のツールとして再セットアップ
-          haxelib run lime setup
 
       - name: Build game (HTML5)
         run: |
